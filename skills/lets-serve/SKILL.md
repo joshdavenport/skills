@@ -61,9 +61,17 @@ Once the plan passes cold-read review, output to the user (and only this):
 
 1. The plan path
 2. A suggestion to commit it if they want — do NOT commit automatically; plans are disposable
-3. The exact prompt for a fresh session:
-   > Read `<path>`. Execute steps 1–N. For each step, state the change before making it and report what changed after. If any step is ambiguous, stop and ask — do not guess.
-4. A reminder to `/clear` or start a new session before running that prompt
+3. **Two handoff prompts** for a fresh session, labelled clearly. Tell the user to `/clear` or start a new session, then paste whichever fits this task:
+
+   **A — Single commit at end (default for small/cohesive work):**
+   > Read `<path>`. Execute steps 1–N. For each step: (1) state the change, (2) make it, (3) verify the step's acceptance criterion, (4) report what changed. Do not commit between steps; I'll review and commit the whole change at the end. If any step is ambiguous, stop and ask — do not guess.
+
+   **B — Commit after each step (for larger work, refactors, or when bisect-friendly history matters):**
+   > Read `<path>`. Execute steps 1–N. For each step: (1) state the change, (2) make it, (3) verify the step's acceptance criterion, (4) commit with a focused message referencing the step number and what it accomplished. Never amend prior commits. If any step is ambiguous, stop and ask — do not guess.
+
+   One-line guidance: pick A if the plan is small or the steps don't form independently meaningful checkpoints; pick B if steps are substantial enough that each one is worth its own revertable commit.
+
+4. A reminder to `/clear` or start a new session before running the chosen prompt
 
 Then stop. This session is done.
 
